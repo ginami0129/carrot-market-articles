@@ -4,9 +4,16 @@
 // 생성 시각
 // 수정 시각
 
-import { Column, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 // 삭제 시각
+@Entity()
 export class Article {
   @PrimaryGeneratedColumn('uuid')
   public id: string;
@@ -17,9 +24,16 @@ export class Article {
   @Column()
   public desc: string;
 
-  @Column()
+  @CreateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+  })
   public createdAt: Date;
 
-  @Column()
+  @UpdateDateColumn({
+    type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP(6)',
+    onUpdate: 'CURRENT_TIMESTAMP(6)',
+  })
   public updatedAt: Date;
 }

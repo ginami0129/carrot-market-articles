@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
+import { FindOneParams } from 'src/utils/findOneParams';
 import { ArticlesService } from './articles.service';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
@@ -7,28 +16,36 @@ import { UpdateArticleDto } from './dto/update-article.dto';
 export class ArticlesController {
   constructor(private readonly articlesService: ArticlesService) {}
 
-  @Post()
-  create(@Body() createArticleDto: CreateArticleDto) {
-    return this.articlesService.create(createArticleDto);
+  @Get()
+  getArticles() {
+    return this.articlesService.getArticles();
   }
 
-  @Get()
-  findAll() {
-    return this.articlesService.findAll();
+  @Get('count')
+  async totalArticles() {
+    return await this.articlesService.totalArticleCount();
+  }
+
+  @Post()
+  async createArticle(@Body() createArticleDto: CreateArticleDto) {
+    return this.articlesService.createArticles(createArticleDto);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.articlesService.findOne(+id);
+  async getArticle(@Param() { id }: FindOneParams) {
+    return await this.articlesService.getArticleById(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateArticleDto: UpdateArticleDto) {
-    return this.articlesService.update(+id, updateArticleDto);
+  async updateArticle(
+    @Param() { id }: FindOneParams,
+    @Body() updateArticleDto: UpdateArticleDto,
+  ) {
+    return await this.articlesService.updateArticleById(id, updateArticleDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.articlesService.remove(+id);
+  async deleteArticle(@Param() { id }: FindOneParams) {
+    return await this.articlesService.deleteArticleById(id);
   }
 }
