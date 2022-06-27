@@ -7,6 +7,8 @@ import {
   Param,
   Delete,
   Query,
+  CACHE_MANAGER,
+  Inject,
 } from '@nestjs/common';
 import { FindOneParams } from 'src/utils/types/findOneParams';
 import { ArticlesService } from './articles.service';

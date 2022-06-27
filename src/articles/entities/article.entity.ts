@@ -11,7 +11,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
-
+// SequelizeModule
 // 삭제 시각
 @Entity()
 export class Article {

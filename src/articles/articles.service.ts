@@ -1,4 +1,11 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  Inject,
+  CACHE_MANAGER,
+} from '@nestjs/common';
+import { Cache } from 'cache-manager';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { pathToFileURL } from 'url';
@@ -11,6 +18,7 @@ export class ArticlesService {
   constructor(
     @InjectRepository(Article)
     private articleRepository: Repository<Article>,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {}
 
   getArticles() {
@@ -41,7 +49,15 @@ export class ArticlesService {
   }
 
   async getArticleById(id: string) {
-    const article = await this.articleRepository.findOneBy({ id });
+    // cache에 들어있는지 확인
+    let article = await this.cacheManager.get(id);
+    if (!article) {
+      // 없으면 DB에서 가져오고..
+      article = await this.articleRepository.findOneBy({ id });
+      // 캐시에 집어넣는다.
+      await this.cacheManager.set(id, article);
+    }
+
     if (article) {
       return article;
     }

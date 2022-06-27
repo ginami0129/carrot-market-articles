@@ -13,7 +13,7 @@ export class UpdateArticleDto {
   @IsString()
   @IsNotEmpty()
   @IsOptional()
-  title: string;
+  title2: string;
 
   @IsString()
   @IsNotEmpty()
