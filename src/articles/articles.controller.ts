@@ -6,19 +6,21 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
-import { FindOneParams } from 'src/utils/findOneParams';
+import { FindOneParams } from 'src/utils/types/findOneParams';
 import { ArticlesService } from './articles.service';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
+import { PaginationParams } from 'src/utils/types/paginationParams';
 
 @Controller('articles')
 export class ArticlesController {
   constructor(private readonly articlesService: ArticlesService) {}
 
   @Get()
-  getArticles() {
-    return this.articlesService.getArticles();
+  async getArticles(@Query() { page, pageSize }: PaginationParams) {
+    return this.articlesService.getArticlesWithPage(page, pageSize);
   }
 
   @Get('count')

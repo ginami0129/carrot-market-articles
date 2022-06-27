@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { pathToFileURL } from 'url';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
 import { Article } from './entities/article.entity';
@@ -14,6 +15,22 @@ export class ArticlesService {
 
   getArticles() {
     return this.articleRepository.find();
+  }
+  async getArticlesWithPage(page?: number, pageSize?: number) {
+    console.log(page);
+    const [items, count] = await this.articleRepository.findAndCount({
+      order: {
+        createdAt: 'DESC',
+      },
+      skip: (page - 1) * pageSize,
+      take: pageSize,
+    });
+    return {
+      items,
+      page,
+      pageSize,
+      count,
+    };
   }
 
   async createArticles(createArticleDto: CreateArticleDto) {
@@ -57,7 +74,5 @@ export class ArticlesService {
     return {
       count: articles.length,
     };
-
-    // return await this.articleRepository.findAndCount();
   }
 }
